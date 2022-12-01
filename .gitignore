@@ -1,0 +1,5 @@
+
+node_modules/
+src/template/
+npm-debug.log*
+output.log

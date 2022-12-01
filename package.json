@@ -1,0 +1,30 @@
+{
+  "name": "adventofcode2022",
+  "version": "1.0.0",
+  "description": "Advent of Code 2022",
+  "main": "index.js",
+  "scripts": {
+    "index": "ts-node src/index.ts",
+    "jest": "jest",
+    "test": "jest src/${npm_config_puzzle}/solution.spec.ts",
+    "test-watch": "jest src/${npm_config_puzzle}/solution.spec.ts --watch"
+  },
+  "author": "Tony McGee <tmcgee.au@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@types/jest": "^29.2.3",
+    "@types/node": "^18.11.10",
+    "@types/node-dijkstra": "^2.5.3",
+    "@types/readline-sync": "^1.4.4",
+    "jest": "^29.3.1",
+    "mathjs": "^11.4.0",
+    "node-dijkstra": "^2.5.0",
+    "readline-sync": "^1.4.10",
+    "ts-jest": "^29.0.3",
+    "typescript": "^4.9.3",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1"
+  }
+}
