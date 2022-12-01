@@ -6,8 +6,8 @@
   "scripts": {
     "index": "ts-node src/index.ts",
     "jest": "jest",
-    "test": "jest src/${npm_config_puzzle}/solution.spec.ts",
-    "test-watch": "jest src/${npm_config_puzzle}/solution.spec.ts --watch"
+    "test": "jest src/%npm_config_puzzle%/solution.spec.ts",
+    "test-watch": "jest src/%npm_config_puzzle%/solution.spec.ts --watch"
   },
   "author": "Tony McGee <tmcgee.au@gmail.com>",
   "license": "ISC",
