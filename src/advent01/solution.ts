@@ -4,8 +4,8 @@ import { ISolution, InputFile } from '../shared';
 export class ElfPartyMember {
    calories: number[];
 
-   constructor(input: string) {
-      this.calories = input.split(' ').map(x => +x)
+   constructor(calories: number[]) {
+      this.calories = calories
    }
 
    totalCalories() : number {
@@ -17,8 +17,7 @@ export class ElfParty {
    elves: ElfPartyMember[]
 
    constructor(input: string) {
-      let input2 = input.replace(/\r\n/g," ").replace(/  /g,":").split(":")
-      this.elves = input2.map(x => new ElfPartyMember(x))
+      this.elves = input.split("\r\n\r\n").map(e => new ElfPartyMember(e.split("\r\n").map(Number)))
    }
 
    findMaxCalories() : number {
@@ -32,7 +31,7 @@ export class ElfParty {
    }
 }
 
-class SolutionXX implements ISolution {
+class Solution01 implements ISolution {
    dayNumber: number = 1;
 
    solvePart1(): string {
@@ -50,4 +49,4 @@ class SolutionXX implements ISolution {
    }
 }
 
-export default new SolutionXX() as ISolution;
+export default new Solution01() as ISolution;
