@@ -20,9 +20,19 @@ export class SectionAssignmentPair {
       return 0;
    }
 
-   testAssignmentContainer(a1: [number, number], a2: [number, number])
+   testAssignmentContainer(a1: [number, number], a2: [number, number]): boolean
    {
       return a1[0] <= a2[0] && a1[1] >= a2[1];
+   }
+
+   findAssignmentOverlap(): number {
+      if (this.testAssignmentOverlap(this.elf1, this.elf2))
+         return 1;
+      return 0;
+   }
+
+   testAssignmentOverlap(a1: [number, number], a2: [number, number]): boolean {
+      return a1[1] >= a2[0] && a1[0] <= a2[1];
    }
 }
 
@@ -35,6 +45,10 @@ export class SectionAssignmentPairList {
 
    countContainedAssignments(): number {
       return this.assignments.filter(x => x.findAssignmentContainer() > 0).length;
+   }
+
+   countOverlappingAssignments(): number {
+      return this.assignments.filter(x => x.findAssignmentOverlap() > 0).length;
    }
 }
 
@@ -50,9 +64,9 @@ class Solution04 implements ISolution {
 
    solvePart2(): string {
       const inputFile = new InputFile(this.dayNumber);
-      //let test = new TestClass(inputFile.readLines());
+      let list = new SectionAssignmentPairList(inputFile.readLines());
 
-      return '';
+      return '' + list.countOverlappingAssignments();
    }
 }
 
