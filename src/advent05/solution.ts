@@ -34,7 +34,7 @@ export class CargoCrane {
    constructor(input: string[]) {
       this.moves = input.filter(x => x.startsWith('move')).map(x => new CargoMove(x));
       let stacksInput: string[] = input.filter(s => s.includes('[')).map(s => '   ' + s)
-      let stacksCount = Math.max(...input.filter(s => s.startsWith(' 1'))[0].trim().split('   ').map(x => +x))
+      let stacksCount: number = (stacksInput[0].length - 2) / 4;
 
       for (let i = 1; i <= stacksCount; i++) {
          let stackVal = stacksInput.map(x => x.charAt(i * 4)).join('').trim().split('').reverse();
