@@ -38,19 +38,33 @@ describe(`Advent of Code Day ${solution.dayNumber}`, () => {
     expect(crane.stacks[2].crates).toStrictEqual(['P']);
   });
 
-  it('should move crates', () => {
+  it('should move crates part 1', () => {
     let crane = new CargoCrane(sampleInput);
 
-    crane.applyMove(crane.moves[0]);
+    crane.applyMovePart1(crane.moves[0]);
     expect(crane.stacks[0].crates).toStrictEqual(['Z','N','D']);
     expect(crane.stacks[1].crates).toStrictEqual(['M','C']);
-    expect(crane.stacks[2].crates).toStrictEqual(['P']);  });
+    expect(crane.stacks[2].crates).toStrictEqual(['P']);
+  });
+
+  it('should move crates part 2', () => {
+    let crane = new CargoCrane(sampleInput);
+
+    crane.applyMovePart2(crane.moves[0]);
+    expect(crane.stacks[0].crates).toStrictEqual(['Z','N','D']);
+    expect(crane.stacks[1].crates).toStrictEqual(['M','C']);
+    expect(crane.stacks[2].crates).toStrictEqual(['P']);
+    crane.applyMovePart2(crane.moves[1]);
+    expect(crane.stacks[0].crates).toStrictEqual([]);
+    expect(crane.stacks[1].crates).toStrictEqual(['M','C']);
+    expect(crane.stacks[2].crates).toStrictEqual(['P','Z','N','D']);
+  });
 
   it('should solve part 1', () => {
     expect(solution.solvePart1()).toBe('CVCWCRTVQ');
   });
 
   it('should solve part 2', () => {
-    //expect(solution.solvePart2()).toBe('xx');
+    expect(solution.solvePart2()).toBe('CNSCZWLVT');
   });
 });

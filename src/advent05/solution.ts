@@ -8,8 +8,8 @@ export class CargoStack {
       this.crates = input;
    }
 
-   pop(): string {
-      return this.crates.pop() ?? '';
+   pop(): string | undefined {
+      return this.crates.pop();
    }
 
    push(c: string) {
@@ -42,12 +42,30 @@ export class CargoCrane {
       }
    }
 
-   applyMove(move: CargoMove) {
+   applyMovePart1(move: CargoMove) {
       let stack1 = this.stacks[move.stack1 - 1];
       let stack2 = this.stacks[move.stack2 - 1];
       let count = move.count;
       while (count > 0) {
-         stack2.push(stack1.pop());
+         stack2.push(stack1.pop() ?? '');
+         count--;
+      }
+   }
+
+   applyMovePart2(move: CargoMove) {
+      let stack1 = this.stacks[move.stack1 - 1];
+      let stack2 = this.stacks[move.stack2 - 1];
+      let count = move.count;
+
+      let temp: string[] = [];
+      while (count > 0) {
+         temp.push(stack1.pop() ?? '');
+         count--;
+      }
+
+      count = move.count;
+      while (count > 0) {
+         stack2.push(temp.pop() ?? '')
          count--;
       }
    }
@@ -60,16 +78,18 @@ class Solution05 implements ISolution {
       const inputFile = new InputFile(this.dayNumber);
       let crane = new CargoCrane(inputFile.readLines());
 
-      crane.moves.map(m => crane.applyMove(m))
+      crane.moves.map(m => crane.applyMovePart1(m))
 
       return '' + crane.stacks.map(s => s.crates.slice(-1)).join('');
    }
 
    solvePart2(): string {
       const inputFile = new InputFile(this.dayNumber);
-      //let crane = new CargoCrane(inputFile.readLines());
+      let crane = new CargoCrane(inputFile.readLines());
 
-      return '';
+      crane.moves.map(m => crane.applyMovePart2(m))
+
+      return '' + crane.stacks.map(s => s.crates.slice(-1)).join('');
    }
 }
 
