@@ -3,16 +3,22 @@ import { ISolution, InputFile, Util } from '../shared';
 
 export class ElfStreamBuffer {
    data: string = '';
-   marker: number = -1;
 
    constructor(input: string) {
       this.data = input;
-      this.marker = this.findMarker();
    }
 
-   findMarker(): number {
-      let groups: string[] = Util.range(this.data.length - 3).map(n => this.data.substring(n, n + 4))
-      return groups.map(g => new Set(g)).map((s,i) => s.size === 4 ? i : -1).filter(n => n >= 0)[0] + 4
+   findMarker(packetSize: number): number {
+      let groups: string[] = Util.range(this.data.length - packetSize + 1).map(n => this.data.substring(n, n + packetSize))
+      return groups.map(g => new Set(g)).map((s,i) => s.size === packetSize ? i : -1).filter(n => n >= 0)[0] + packetSize
+   }
+
+   findMarkerPart1() {
+      return this.findMarker(4);
+   }
+
+   findMarkerPart2() {
+      return this.findMarker(14);
    }
 }
 
@@ -23,14 +29,14 @@ class Solution06 implements ISolution {
       const inputFile = new InputFile(this.dayNumber);
       let buf = new ElfStreamBuffer(inputFile.readText());
 
-      return '' + buf.findMarker();
+      return '' + buf.findMarkerPart1();
    }
 
    solvePart2(): string {
       const inputFile = new InputFile(this.dayNumber);
-      //let buf = new ElfStreamBuffer(inputFile.readText());
+      let buf = new ElfStreamBuffer(inputFile.readText());
 
-      return '';
+      return '' + buf.findMarkerPart2();
    }
 }
 
