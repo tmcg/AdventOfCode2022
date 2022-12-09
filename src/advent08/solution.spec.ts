@@ -29,13 +29,23 @@ describe(`Advent of Code Day ${solution.dayNumber}`, () => {
     expect(forest.vmap[2]).toStrictEqual([1,1,0,1,1]);
     expect(forest.vmap[3]).toStrictEqual([1,0,1,0,1]);
     expect(forest.vmap[4]).toStrictEqual([1,1,1,1,1]);
-  })
+  });
+
+  it('should calculate scenic map', () => {
+    let forest: ElfForest = new ElfForest(sampleInput).calcScenicMap();
+
+    expect(forest.smap[0]).toStrictEqual([0,0,0,0,0]);
+    expect(forest.smap[1]).toStrictEqual([0,1,4,1,0]);
+    expect(forest.smap[2]).toStrictEqual([0,6,1,2,0]);
+    expect(forest.smap[3]).toStrictEqual([0,1,8,3,0]);
+    expect(forest.smap[4]).toStrictEqual([0,0,0,0,0]);
+  });
 
   it('should solve part 1', () => {
     expect(solution.solvePart1()).toBe('1681');
   });
 
   it('should solve part 2', () => {
-    expect(solution.solvePart2()).toBe('');
+    expect(solution.solvePart2()).toBe('201684');
   });
 });
