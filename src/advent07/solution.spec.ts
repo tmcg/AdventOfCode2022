@@ -72,11 +72,16 @@ describe(`Advent of Code Day ${solution.dayNumber}`, () => {
     //f.map(a => console.log(`path=${a.path()} size=${a.size()}`));
   });
 
+  it('should find smallest size to delete', () => {
+    let fs = new DeviceFileSystem(sampleInput);
+    expect(fs.findSmallestSizeToDelete()).toBe(24933642);
+  });
+
   it('should solve part 1', () => {
     expect(solution.solvePart1()).toBe('1391690');
   });
 
   it('should solve part 2', () => {
-    expect(solution.solvePart2()).toBe('');
+    expect(solution.solvePart2()).toBe('5469168');
   });
 });

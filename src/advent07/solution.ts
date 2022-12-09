@@ -1,5 +1,5 @@
 
-import { ISolution, InputFile } from '../shared';
+import { ISolution, InputFile, Util } from '../shared';
 
 export class DeviceFile {
    name: string = '';
@@ -137,6 +137,21 @@ export class DeviceFileSystem {
    nextCommand(cmds: string[]): string {
       return cmds.shift() ?? '';
    }
+
+   findSmallestSizeToDelete(): number {
+      let f: DeviceFolder[] = this.traverseFolders();
+      let freeSpace: number = 70000000 - f[0].size();
+      let needSpace: number = 30000000 - freeSpace;
+
+      f.sort((a,b) => (a.size() > b.size()) ? 1 : -1);
+
+      //let log = Util.createLogger()
+      //log.info(`freeSpace=${freeSpace}`);
+      //log.info(`needSpace=${needSpace}`);
+      //f.map(a => log.info(`${a.path()} ${a.size()}`));
+
+      return f.filter(a => a.size() >= needSpace)[0].size();
+   }
 }
 
 class Solution07 implements ISolution {
@@ -151,9 +166,9 @@ class Solution07 implements ISolution {
 
    solvePart2(): string {
       const inputFile = new InputFile(this.dayNumber);
-      //let fs = new DeviceFileSystem(inputFile.readLines());
+      let fs = new DeviceFileSystem(inputFile.readLines());
 
-      return '';
+      return '' + fs.findSmallestSizeToDelete();
    }
 }
 
