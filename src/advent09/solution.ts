@@ -14,56 +14,71 @@ export class RopeMove {
 
 export class RopeBridge {
    moves: RopeMove[];
-   head: IPosition = {x: 0, y: 0};
-   tail: IPosition = {x: 0, y: 0};
+   knots: IPosition[] = []
    tailPath: Set<string>;
 
-   constructor(input: string[]) {
+   constructor(input: string[], knotCount: number = 2) {
       this.moves = input.map(x => new RopeMove(x));
+
+      this.knots = [...Array(knotCount)].map(n => ({x: 0, y: 0}));
       this.tailPath = new Set<string>();
       this.tailPath.add(this.tailPos());
    }
 
-   headPos(): string { return `${this.head.x},${this.head.y}`; }
+   knotPos(n: number): string { let s = this.knots[n]; return `${s.x},${s.y}`; }
 
-   tailPos(): string { return `${this.tail.x},${this.tail.y}`; }
+   ropePos(): string { return [...this.knots.keys()].map(p => this.knotPos(p)).join('  '); }
+
+   headPos(): string { return this.knotPos(0); }
+
+   tailPos(): string { return this.knotPos(this.knots.length - 1); }
 
    applyMove(move: RopeMove) {
       for (let i = 0; i < move.count; i++) {
-         this.stepHead(move.direction);
+         for (let k = 0; k < this.knots.length - 1; k++) {
+            this.stepMove(move.direction, k);
+         }
+         this.tailPath.add(this.tailPos());
       }
    }
 
-   stepHead(direction: string) {
-      let newHeadX: number = this.head.x;
-      let newHeadY: number = this.head.y;
-      let newTailX: number = this.tail.x;
-      let newTailY: number = this.tail.y;
+   stepMove(direction: string, knotId: number) {
+      let newHeadX: number = this.knots[knotId].x;
+      let newHeadY: number = this.knots[knotId].y;
+      let newTailX: number = this.knots[knotId + 1].x;
+      let newTailY: number = this.knots[knotId + 1].y;
 
-      switch(direction) {
-         case 'R': newHeadX += 1; break;
-         case 'L': newHeadX -= 1; break;
-         case 'U': newHeadY += 1; break;
-         case 'D': newHeadY -= 1; break;
+      if (knotId === 0) {
+         switch(direction) {
+            case 'R': newHeadX += 1; break;
+            case 'L': newHeadX -= 1; break;
+            case 'U': newHeadY += 1; break;
+            case 'D': newHeadY -= 1; break;
+         }
+         this.knots[knotId] = {x:newHeadX, y:newHeadY}
       }
 
-      if (newHeadX - this.tail.x >= 2) {
+      let deltaX: number = newHeadX - newTailX;
+      let deltaY: number = newHeadY - newTailY;
+      // make adjustments in the case of fully diagonal movement
+      let adjustX: number = (deltaX >= 2 ? -1 : 0) + (deltaX <= -2 ? 1 : 0);
+      let adjustY: number = (deltaY >= 2 ? -1 : 0) + (deltaY <= -2 ? 1 : 0);
+
+      if (deltaX >= 2) {
          newTailX = newHeadX - 1;
-         newTailY = newHeadY;
-      } else if (this.tail.x - newHeadX >= 2) {
+         newTailY = newHeadY + adjustY;
+      } else if (deltaX <= -2) {
          newTailX = newHeadX + 1;
-         newTailY = newHeadY;
-      } else if (newHeadY - this.tail.y >= 2) {
-         newTailX = newHeadX;
+         newTailY = newHeadY + adjustY;
+      } else if (deltaY >= 2) {
          newTailY = newHeadY - 1;
-      } else if (this.tail.y - newHeadY >= 2) {
-         newTailX = newHeadX;
+         newTailX = newHeadX + adjustX;
+      } else if (deltaY <= -2) {
          newTailY = newHeadY + 1;
+         newTailX = newHeadX + adjustX;
       }
 
-      this.head = {x:newHeadX, y:newHeadY}
-      this.tail = {x:newTailX, y:newTailY}
-      this.tailPath.add(this.tailPos());
+      this.knots[knotId + 1] = {x:newTailX, y:newTailY}
    }
 }
 
@@ -81,9 +96,11 @@ class Solution09 implements ISolution {
 
    solvePart2(): string {
       const inputFile = new InputFile(this.dayNumber);
-      //let b = new RopeBridge(inputFile.readLines());
+      let b = new RopeBridge(inputFile.readLines(), 10);
 
-      return '';
+      b.moves.map(m => b.applyMove(m));
+
+      return '' + [...b.tailPath.keys()].length;
    }
 }
 
