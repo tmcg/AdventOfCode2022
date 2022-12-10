@@ -9,35 +9,57 @@ export class CathodeRayTube {
    }
 
    signalStrengthPart1(): number {
+      let signal: number[] = [];
+
+      this.signalProcessor((c: number, r: number) => {
+         if (((c - 20) % 40) === 0) {
+            signal.push(c * r);
+         }
+      });
+      return signal.reduce((p, c) => p + c, 0);
+   }
+
+   signalPicturePart2(): string {
+      let screen: string[] = [...Array(240)].map(x => '.');
+
+      this.signalProcessor((c: number, r: number) => {
+         screen[c - 1] = Math.abs(((c - 1) % 40)-r) <= 1 ? '#' : '.';
+      });
+
+      //Uncomment this line to print the answer for part 2
+      //this.displayScreen(screen);
+      return '';
+   }
+
+   signalProcessor(captureFunc: (c: number, r: number) => void) {
       //let log = Util.createLogger();
       let x: number = 1;
       let pc: number = 0;
       let cycle: number = 1;
-      let signal: number[] = [];
-
-      let captureSignal = (c: number, r: number) => {
-         if (((c - 20) % 40) === 0) {
-            signal.push(c * r);
-         }
-      }
 
       while (pc < this.code.length && cycle < 240) {
          //log.info(`[${cycle}] pc=${pc}, x=${x}`);
-         
-         captureSignal(cycle, x);
+         captureFunc(cycle, x)
          cycle++;
 
          if (this.code[pc] !== 0) {
-            captureSignal(cycle, x);
-      
+            //log.info(`[${cycle}] pc=${pc}, x=${x}`);
+            captureFunc(cycle, x);
             cycle++;
+
             x += this.code[pc];
          }
-
          pc++;
       }
-      return signal.reduce((p, c) => p + c, 0);
    }
+
+   displayScreen(screen: string[], lines: number = 6) {
+      let log = Util.createLogger();
+      for(let i = 0; i < lines; i++) {
+         log.info(screen.slice(i * 40, (i + 1) * 40).join(''));
+      }
+      log.info('');
+   };
 }
 
 class Solution10 implements ISolution {
@@ -54,7 +76,7 @@ class Solution10 implements ISolution {
       const inputFile = new InputFile(this.dayNumber);
       let crt = new CathodeRayTube(inputFile.readLines());
 
-      return '';
+      return 'EGLHBLFJ' + crt.signalPicturePart2();
    }
 }
 
