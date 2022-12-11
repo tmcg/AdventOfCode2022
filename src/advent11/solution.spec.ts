@@ -56,6 +56,7 @@ describe(`Advent of Code Day ${solution.dayNumber}`, () => {
     expect(mt.monkeys[1].throwToFalse).toBe(0);
     expect(mt.monkeys[2].throwToFalse).toBe(3);
     expect(mt.monkeys[3].throwToFalse).toBe(1);
+    expect(mt.lcm).toBe(0);
   });
 
   it('should inspect items', () => {
@@ -90,7 +91,26 @@ describe(`Advent of Code Day ${solution.dayNumber}`, () => {
 
   it('should calculate monkey business part 1', () => {
     let mt = new MonkeyTroop(sampleInput.join('\r\n'));
-    expect(mt.calculateMonkeyBusinessPart1()).toBe(10605);
+    expect(mt.calculateMonkeyBusiness()).toBe(10605);
+  });
+
+  it('should calculate monkey business part 2', () => {
+    let mt = new MonkeyTroop(sampleInput.join('\r\n'), true);
+    expect(mt.lcm).toBe(96577);
+
+    let roundNum: number = 0;
+    mt.nextRound(); roundNum++;
+    expect(mt.monkeys[0].inspections).toBe(2);
+    expect(mt.monkeys[1].inspections).toBe(4);
+    expect(mt.monkeys[2].inspections).toBe(3);
+    expect(mt.monkeys[3].inspections).toBe(6);
+    while(roundNum < 20) {
+      mt.nextRound(); roundNum++;
+    }
+    expect(mt.monkeys[0].inspections).toBe(99);
+    expect(mt.monkeys[1].inspections).toBe(97);
+    expect(mt.monkeys[2].inspections).toBe(8);
+    expect(mt.monkeys[3].inspections).toBe(103);
   });
 
   it('should solve part 1', () => {
@@ -98,6 +118,6 @@ describe(`Advent of Code Day ${solution.dayNumber}`, () => {
   });
 
   it('should solve part 2', () => {
-    expect(solution.solvePart2()).toBe('');
+    expect(solution.solvePart2()).toBe('32059801242');
   });
 });

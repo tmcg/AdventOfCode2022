@@ -21,13 +21,17 @@ export class Monkey {
       this.throwToFalse = +(mi[5].split(':')[1].trim().substring(15));
    }
 
-   inspect(monkeyFn: (n: number) => Monkey) {
+   inspect(monkeyFn: (n: number) => Monkey, lcm: number = 0) {
       if (this.items.length < 1) return;
 
       //log.info(`  Monkey inspects an item with a worry level of ${this.items[0]}`);
       this.inspections++;
 
-      this.items[0] = this.applyWorry(this.items[0]);
+      if (lcm > 0) {
+         this.items[0] = this.applyWorry(this.items[0] % lcm, 1);
+      } else {
+         this.items[0] = this.applyWorry(this.items[0], 3);
+      }
       //log.info(`    Worry level rules are applied to a new worry level of ${this.items[0]}`);
 
       if ((this.items[0] % this.testDiv) === 0) {
@@ -41,8 +45,8 @@ export class Monkey {
       }
    }
 
-   applyWorry(n: number): number {
-      return Math.floor(eval(this.oper.substring(6).replaceAll('old', `${n}`)) / 3);
+   applyWorry(n: number, worryDiv: number): number {
+      return Math.floor(eval(this.oper.substring(6).replaceAll('old', `${n}`)) / worryDiv);
    }
 
    throwItem(to: Monkey) {
@@ -52,9 +56,13 @@ export class Monkey {
 
 export class MonkeyTroop {
    monkeys: Monkey[] = [];
+   lcm: number = 0;
+   rounds: number = 0;
 
-   constructor(input: string) {
+   constructor(input: string, part2: boolean = false) {
       this.monkeys = input.split('\r\n\r\n').map(x => new Monkey(x));
+      this.lcm = part2 ? this.monkeys.map(m => m.testDiv).reduce((a, b) => a * b, 1) : 0;
+      this.rounds = part2 ? 10000 : 20;
    }
 
    nextRound() {
@@ -63,13 +71,13 @@ export class MonkeyTroop {
          //log.info(`Monkey ${n}:`);
 
          while (m.items.length > 0) {
-            m.inspect((n) => this.monkeys[n]);
+            m.inspect((n) => this.monkeys[n], this.lcm);
          }
       }
    }
 
-   calculateMonkeyBusinessPart1(): number {
-      for (let i = 0; i < 20; i++) {
+   calculateMonkeyBusiness(): number {
+      for (let i = 0; i < this.rounds; i++) {
          this.nextRound();
       }
 
@@ -85,14 +93,14 @@ class Solution11 implements ISolution {
       const inputFile = new InputFile(this.dayNumber);
       let mt = new MonkeyTroop(inputFile.readText());
 
-      return '' + mt.calculateMonkeyBusinessPart1();
+      return '' + mt.calculateMonkeyBusiness();
    }
 
    solvePart2(): string {
       const inputFile = new InputFile(this.dayNumber);
-      //let mt = new MonkeyTroop(inputFile.readText());
+      let mt = new MonkeyTroop(inputFile.readText(), true);
 
-      return '';
+      return '' + mt.calculateMonkeyBusiness();
    }
 }
 
