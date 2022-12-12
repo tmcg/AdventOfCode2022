@@ -1,7 +1,6 @@
 
 import { ISolution, InputFile, Vector2, Dictionary, Compass, Util } from '../shared';
 import Graph from 'node-dijkstra';
-import { string } from 'mathjs';
 
 export class HeightSquare extends Vector2 {
    ch: string = '';
@@ -84,9 +83,16 @@ class Solution12 implements ISolution {
 
    solvePart2(): string {
       const inputFile = new InputFile(this.dayNumber);
-      //let hm = new HeightMap(inputFile.readLines());
+      let hm = new HeightMap(inputFile.readLines());
+      let aa = Object.keys(hm.space).map(k => hm.space[k]).filter(s => s.ch === 'a').map(s => s.id());
 
-      return '';
+      let lens: number[] = aa.map(a => {
+            let p = hm.graph.path(a, hm.finish) as string[];
+            return p === null ? 9999 : p.length - 1;
+         });
+
+
+      return '' + Math.min(...lens);
    }
 }
 
