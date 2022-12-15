@@ -6,10 +6,18 @@ type CaveTile = '.' | '#' | 'o';
 export class SandCave {
    points: Dictionary<CaveTile> = {};
    abyss: number = 0;
+   part2: boolean = false
 
-   constructor(input: string[], abyss: number) {
-      this.abyss = abyss;
+   constructor(input: string[], part2: boolean = false) {
+      this.part2 = part2;
+      this.addPoints(input);
+      this.abyss = Math.max(...Object.keys(this.points).map(k => parseInt(k.split(',')[1]))) + 2;
+      if (this.part2) {
+         this.addPoints([`-2000,${this.abyss} -> 2000,${this.abyss}`]);
+      }
+   }
 
+   addPoints(input: string[]) {
       let lines = input
          .map(ax => ax.split(' -> '))
          .map(bx => bx
@@ -68,13 +76,13 @@ export class SandCave {
             pos.x += 1;
          } else {
             this.points[tileId(pos.x, pos.y)] = 'o';
-            return true;
+            return pos.y > 0;
          }
       }
    }
 
-   fillCavePart1(): number {
-      let sandCount = 0;
+   fillCave(): number {
+      let sandCount = this.part2 ? 1 : 0;
       while(this.addSand()) { sandCount++; }
       return sandCount;
    }
@@ -85,16 +93,16 @@ class Solution14 implements ISolution {
 
    solvePart1(): string {
       const inputFile = new InputFile(this.dayNumber);
-      let cave = new SandCave(inputFile.readLines(), 185);
+      let cave = new SandCave(inputFile.readLines());
 
-      return '' + cave.fillCavePart1();
+      return '' + cave.fillCave();
    }
 
    solvePart2(): string {
       const inputFile = new InputFile(this.dayNumber);
-      //let cave = new SandCave(inputFile.readLines());
+      let cave = new SandCave(inputFile.readLines(), true);
 
-      return '';
+      return '' + cave.fillCave();
    }
 }
 

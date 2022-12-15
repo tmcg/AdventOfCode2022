@@ -9,7 +9,7 @@ describe(`Advent of Code Day ${solution.dayNumber}`, () => {
   ];
 
   it('should read input', () => {
-    let cave = new SandCave(sampleInput, 10);
+    let cave = new SandCave(sampleInput);
 
     expect(Object.keys(cave.points).length).toBe(20);
     expect(cave.tileAt('498,4')).toBe('#');
@@ -36,7 +36,7 @@ describe(`Advent of Code Day ${solution.dayNumber}`, () => {
   });
 
   it('should add sand', () => {
-    let cave = new SandCave(sampleInput, 10);
+    let cave = new SandCave(sampleInput);
 
     expect(cave.tileAt('500,8')).toBe('.');
     expect(Object.keys(cave.points).length).toBe(20);
@@ -55,16 +55,24 @@ describe(`Advent of Code Day ${solution.dayNumber}`, () => {
   });
 
   it('should let sand fall into the abyss', () => {
-    let cave = new SandCave(sampleInput, 10);
+    let cave = new SandCave(sampleInput);
 
-    expect(cave.fillCavePart1()).toBe(24);
+    expect(cave.abyss).toBe(11);
+    expect(cave.fillCave()).toBe(24);
   });
+
+  it('should let sand fill the entire cave', () => {
+    let cave = new SandCave(sampleInput, true);
+
+    expect(cave.abyss).toBe(11);
+    expect(cave.fillCave()).toBe(93);
+  })
 
   it('should solve part 1', () => {
     expect(solution.solvePart1()).toBe('692');
   });
 
   it('should solve part 2', () => {
-    expect(solution.solvePart2()).toBe('');
+    expect(solution.solvePart2()).toBe('31706');
   });
 });
