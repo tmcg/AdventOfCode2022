@@ -60,11 +60,17 @@ describe(`Advent of Code Day ${solution.dayNumber}`, () => {
     expect(sig.sumOfOrderedIndices()).toBe(13);
   });
 
+  it('should calculate decoder key', () => {
+    let sig = new DistressSignal(sampleInput.join('\r\n'));
+
+    expect(sig.decoderKey()).toBe(140);
+  });
+
   it('should solve part 1', () => {
     expect(solution.solvePart1()).toBe('6272');
   });
 
   it('should solve part 2', () => {
-    expect(solution.solvePart2()).toBe('');
+    expect(solution.solvePart2()).toBe('22288');
   });
 });

@@ -1,5 +1,5 @@
 
-import { ISolution, InputFile } from '../shared';
+import { ISolution, InputFile, Util } from '../shared';
 
 type NumberOrPacket = number | Packet;
 type Packet = NumberOrPacket[];
@@ -44,6 +44,7 @@ export class SignalPair {
 
 export class DistressSignal {
    pairs: SignalPair[] = [];
+   packets: Packet[] = [];
 
    constructor(input: string) {
       this.pairs = input
@@ -52,10 +53,39 @@ export class DistressSignal {
             let [a,b] = x.split('\r\n'); 
             return new SignalPair(a, b);
          });
+
+      this.packets = input
+         .split('\r\n')
+         .filter(x => x > '')
+         .map(x => JSON.parse(x));
+
+      this.packets.push(JSON.parse('[[2]]'));
+      this.packets.push(JSON.parse('[[6]]'));
    }
 
    sumOfOrderedIndices(): number {
       return this.pairs.map((el,ix) => el.compare() === 'ordered' ? ix + 1 : 0).reduce((p, c) => p + c, 0);
+   }
+
+   decoderKey(): number {
+      //let log = Util.createLogger();
+
+      let sortedPackets = this.packets.sort((a, b) => {
+         let result = SignalPair.compareFunc(a,b);
+         if (result === 'ordered') return -1;
+         if (result === 'unordered') return 1;
+         return 0;
+      })
+
+      let result: number = 1;
+      for (let i = 0; i < sortedPackets.length; i++) {
+         //log.info(`${i} => ${sortedPackets[i]}`);
+         let packetStr: string = JSON.stringify(sortedPackets[i]);
+         if (packetStr === '[[2]]' || packetStr === '[[6]]') {
+            result *= (i+1);
+         }
+      }
+      return result;
    }
 }
 
@@ -72,9 +102,9 @@ class Solution13 implements ISolution {
 
    solvePart2(): string {
       const inputFile = new InputFile(this.dayNumber);
-      //let ds = new DistressSignal(inputFile.readText())
+      let ds = new DistressSignal(inputFile.readText())
 
-      return '';
+      return '' + ds.decoderKey();
    }
 }
 
