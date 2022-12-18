@@ -30,6 +30,10 @@ export function CompassTurn(direction : Compass, left : boolean) : Compass {
    return (direction + (left ? 3 : 1)) % 4;
 }
 
+export function ManhattanDistance(v1: Vec2, v2: Vec2) {
+   return Math.abs(v2.x - v1.x) + Math.abs(v2.y - v1.y);
+}
+
 export interface IPosition extends Vec2 {}
 
 export interface Vec2 {
@@ -60,19 +64,22 @@ export interface IRectangle {
 export class Vector2 implements Vec2 {
    constructor(public x: number, public y: number) {}
 
-   id = () => `${this.x},${this.y}`;
+   id = () => Vector2.id(this);
+   static id = (v: Vec2) => `${v.x},${v.y}`
 }
 
 export class Vector3 implements Vec3 {
    constructor(public x: number, public y: number, public z: number) {}
 
-   id = () => `${this.x},${this.y},${this.z}`;
+   id = () => Vector3.id(this);
+   static id = (v: Vec3) => `${v.x},${v.y},${v.z}`
 }
 
 export class Vector4 implements Vec4 {
    constructor(public x: number, public y: number, public z: number, public w: number) {}
 
-   id = () => `${this.x},${this.y},${this.z},${this.w}`;
+   id = () => Vector4.id(this);
+   static id = (v: Vec4) => `${v.x},${v.y},${v.z},${v.w}`
 }
 
 export class Rectangle implements IRectangle {
