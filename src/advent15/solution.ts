@@ -13,54 +13,66 @@ export class ElfSensor {
 
       this.pos = {x: vals[0], y: vals[1]}
       this.beacon = {x: vals[2], y: vals[3]}
-      this.dist = ManhattanDistance(this.pos, this.beacon);
+      this.dist = ManhattanDistance(this.pos.x, this.pos.y, this.beacon.x, this.beacon.y);
    }
 }
 
 export class ElfSensorZone {
    sensors: ElfSensor[] = [];
-   beacons: Vec2[] = [];
+   beacons: Set<string>;
    minx: number;
    maxx: number;
 
    constructor(input: string[]) {
       this.sensors = input.map(x => new ElfSensor(x));
-      let bs = new Set();
+      this.beacons = new Set<string>();
       for (let b of this.sensors.map(x => x.beacon)) {
-         let id: string = Vector2.id(b);
-         if (!bs.has(id)) {
-            bs.add(id);
-            this.beacons.push(b);
-         }
+         this.beacons.add(Vector2.id(b))
       }
 
       this.minx = Math.min(...this.sensors.map(s => s.pos.x - s.dist));
       this.maxx = Math.max(...this.sensors.map(s => s.pos.x + s.dist));
    }
 
-   isBeacon(x: number, y: number) {
-      for (let i = 0; i < this.beacons.length; i++) {
-         if (this.beacons[i].x === x && this.beacons[i].y === y) {
-            return true;
+   testBeacon(x: number, y: number): boolean {
+      for (let i = 0; i < this.sensors.length; i++) {
+         let si: ElfSensor = this.sensors[i];
+         if (ManhattanDistance(x, y, si.pos.x, si.pos.y) <= si.dist && !this.beaconAt(x, y)) {
+            return false;
          }
       }
-      return false;
+      return true;
+   }
+
+   beaconAt(x: number, y: number): boolean {
+      return this.beacons.has(`${x},${y}`);
    }
 
    findEmptyPositionCount(y: number): number {
-      let positions: Vec2[] = [];
+      let count: number = 0;
       for (let x = this.minx; x < this.maxx; x++) {
-         for (let i = 0; i < this.sensors.length; i++) {
-            if (this.isBeacon(x, y)) continue;
-            if (ManhattanDistance({x: x, y: y}, this.sensors[i].pos) <= this.sensors[i].dist) {
-               positions.push({x: x, y: y});
-               break;
+         if (!this.testBeacon(x, y)) { count++; }
+      }
+      return count;
+   }
+
+   findMissingPositionId(maxSize: number): number {
+      for (let i = 0; i < this.sensors.length; i++) {
+         let si: ElfSensor = this.sensors[i];
+         for (let sd = 0; sd < si.dist; sd++) {
+            let xp: number = sd + 2;
+            let yp: number = si.dist - xp + 1;
+
+            for (let k = 0; k < 4; k++) {
+               let x: number = si.pos.x + xp + (k === 0 || k === 2 ? -1 : 1);
+               let y: number = si.pos.y + yp + (k === 1 || k === 2 ? -1 : 1);
+               if (x >= 0 && y >= 0 && x <= maxSize && y <= maxSize && this.testBeacon(x, y)) {
+                  return x*4000000 + y;
+               }
             }
          }
       }
-
-      //console.log(positions);
-      return positions.length;
+      return 0;
    }
 }
 
@@ -77,9 +89,9 @@ class Solution15 implements ISolution {
 
    solvePart2(): string {
       const inputFile = new InputFile(this.dayNumber);
-      //let zone = new ElfSensorZone(inputFile.readLines());
+      let zone = new ElfSensorZone(inputFile.readLines());
 
-      return '';
+      return '' + zone.findMissingPositionId(4000000);
    }
 }
 

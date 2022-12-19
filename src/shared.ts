@@ -30,8 +30,8 @@ export function CompassTurn(direction : Compass, left : boolean) : Compass {
    return (direction + (left ? 3 : 1)) % 4;
 }
 
-export function ManhattanDistance(v1: Vec2, v2: Vec2) {
-   return Math.abs(v2.x - v1.x) + Math.abs(v2.y - v1.y);
+export function ManhattanDistance(x1: number, y1: number, x2: number, y2: number): number {
+   return Math.abs(x2 - x1) + Math.abs(y2 - y1);
 }
 
 export interface IPosition extends Vec2 {}

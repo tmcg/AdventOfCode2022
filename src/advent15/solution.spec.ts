@@ -34,13 +34,13 @@ describe(`Advent of Code Day ${solution.dayNumber}`, () => {
     expect(zone.sensors[2].beacon).toStrictEqual({x: 15, y: 3});
     expect(zone.sensors[2].dist).toStrictEqual(3);
 
-    expect(zone.beacons.length).toBe(6);
-    expect(zone.beacons[0]).toStrictEqual({x: -2, y: 15});
-    expect(zone.beacons[1]).toStrictEqual({x: 10, y: 16});
-    expect(zone.beacons[2]).toStrictEqual({x: 15, y: 3});
-    expect(zone.beacons[3]).toStrictEqual({x: 2, y: 10});
-    expect(zone.beacons[4]).toStrictEqual({x: 25, y: 17});
-    expect(zone.beacons[5]).toStrictEqual({x: 21, y: 22});
+    expect([...zone.beacons].length).toBe(6);
+    expect([...zone.beacons][0]).toBe('-2,15');
+    expect([...zone.beacons][1]).toBe('10,16');
+    expect([...zone.beacons][2]).toBe('15,3');
+    expect([...zone.beacons][3]).toBe('2,10');
+    expect([...zone.beacons][4]).toBe('25,17');
+    expect([...zone.beacons][5]).toBe('21,22');
 
     expect(zone.minx).toBe(-8);
     expect(zone.maxx).toBe(28);
@@ -52,11 +52,17 @@ describe(`Advent of Code Day ${solution.dayNumber}`, () => {
     expect(zone.findEmptyPositionCount(10)).toBe(26);
   })
 
+  it('should find missing position', () => {
+    let zone = new ElfSensorZone(sampleInput);
+
+    expect(zone.findMissingPositionId(20)).toBe(56000011);
+  })
+
   it('should solve part 1', () => {
     expect(solution.solvePart1()).toBe('5335787');
   });
 
   it('should solve part 2', () => {
-    expect(solution.solvePart2()).toBe('');
+    expect(solution.solvePart2()).toBe('13673971349056');
   });
 });
